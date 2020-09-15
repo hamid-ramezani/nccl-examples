@@ -1,0 +1,40 @@
+set breakpoint pending on
+set trace-commands on
+set logging on
+set can-use-hw-watchpoints 0
+set pagination off
+
+#breakpoints
+#break example1.c:62
+#break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/all_reduce.h:13
+#break /nfs/scistore08/alistgrp/hramezan/nccl/src/enqueue.cc:527
+#break /nfs/scistore08/alistgrp/hramezan/nccl/src/enqueue.cc:84
+break /nfs/scistore08/alistgrp/hramezan/nccl/src/enqueue.cc:124
+#break /nfs/scistore08/alistgrp/hramezan/nccl/src/enqueue.cc:215
+#break /nfs/scistore08/alistgrp/hramezan/nccl/src/init.cc:892
+#break /nfs/scistore08/alistgrp/hramezan/nccl/src/group.cc:111
+
+
+
+
+run
+
+-
+
+
+
+#watchpoints
+#watch sendbuff
+#watch *sendbuff
+#watch *(*sendbuff)
+#watch recvbuff
+#watch *recvbuff
+#watch *(*recvbuff)
+
+
+-
+
+
+
+
+

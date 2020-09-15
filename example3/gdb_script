@@ -1,0 +1,22 @@
+set breakpoint pending on
+set trace-commands on
+set logging on
+set can-use-hw-watchpoints 0
+
+
+#breakpoints
+
+#break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/all_reduce.h:13
+#break /nfs/scistore08/alistgrp/hramezan/nccl/src/enqueue.cc:84
+break /nfs/scistore08/alistgrp/hramezan/nccl/src/enqueue.cc:124
+#break /nfs/scistore08/alistgrp/hramezan/nccl/src/enqueue.cc:215
+
+#break /nfs/scistore08/alistgrp/hramezan/nccl/src/init.cc:892
+#break /nfs/scistore08/alistgrp/hramezan/nccl/src/group.cc:111
+
+
+
+run
+
+
+
