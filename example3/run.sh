@@ -9,7 +9,9 @@ module load openmpi/4.0.2
 
 rm a.out
 
-gcc -I../../nccl/build/include/ -L../../nccl/build/lib -lnccl -lcuda -lcudart -lmpi -g  example3.c
+#gcc -I../../nccl/build/include/ -L../../nccl/build/lib -lnccl -lcuda -lcudart -lmpi -g  example3.cu
+
+nvcc -I/nfs/scistore08/alistgrp/hramezan/nccl/build/include -L/nfs/scistore08/alistgrp/hramezan/nccl/build/lib -lnccl -lcuda -lcudart -lmpi -g -G  example3.cu
 
 
 

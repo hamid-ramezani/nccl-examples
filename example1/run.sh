@@ -8,8 +8,11 @@ module load cuda/10.1.243
 module load openmpi/4.0.2
 
 rm a.out 
-gcc -I/nfs/scistore08/alistgrp/hramezan/nccl/build/include -L/nfs/scistore08/alistgrp/hramezan/nccl/build/lib -lnccl -lcuda -lcudart -g  example1.c
+#gcc -I/nfs/scistore08/alistgrp/hramezan/nccl/build/include -L/nfs/scistore08/alistgrp/hramezan/nccl/build/lib -lnccl -lcuda -lcudart -g  example1.cu
 
-gdb ./a.out --x gdb_script
+nvcc -I/nfs/scistore08/alistgrp/hramezan/nccl/build/include -L/nfs/scistore08/alistgrp/hramezan/nccl/build/lib -lnccl -lcuda -lcudart -g -G  example1.cu
+
+#gdb ./a.out --x gdb_script
+cuda-gdb ./a.out --x gdb_script
 #./a.out
 
