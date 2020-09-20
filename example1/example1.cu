@@ -10,7 +10,7 @@
   if( e != cudaSuccess ) {                          \
     printf("Failed: Cuda error %s:%d '%s'\n",             \
         __FILE__,__LINE__,cudaGetErrorString(e));   \
-    exit(1);                             \
+    exit(EXIT_FAILURE);                             \
   }                                                 \
 } while(0)
 
@@ -20,7 +20,7 @@
   if (r!= ncclSuccess) {                            \
     printf("Failed, NCCL error %s:%d '%s'\n",             \
         __FILE__,__LINE__,ncclGetErrorString(r));   \
-    exit(1);                             \
+    exit(EXIT_FAILURE);                             \
   }                                                 \
 } while(0)
 
@@ -35,6 +35,7 @@ int main(int argc, char* argv[])
   int size = 32*1024*1024;
   int devs[4] = { 0, 1, 2, 3 };
 
+  
 
   //allocating and initializing device buffers
   float** sendbuff = (float**)malloc(nDev * sizeof(float*));
@@ -50,7 +51,6 @@ int main(int argc, char* argv[])
     CUDACHECK(cudaMemset(recvbuff[i], 0, size * sizeof(float)));
     CUDACHECK(cudaStreamCreate(s+i));
   }
-
 
   //initializing NCCL
   NCCLCHECK(ncclCommInitAll(comms, nDev, devs));
@@ -72,6 +72,7 @@ int main(int argc, char* argv[])
   }
 
 
+
   //free device buffers
   for (int i = 0; i < nDev; ++i) {
     CUDACHECK(cudaSetDevice(i));
@@ -88,3 +89,5 @@ int main(int argc, char* argv[])
   printf("Success \n");
   return 0;
 }
+
+
