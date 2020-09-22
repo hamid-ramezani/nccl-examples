@@ -5,9 +5,12 @@ set can-use-hw-watchpoints 0
 set pagination off
 
 #breakpoints
-break example1.cu:52
-#break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/all_reduce.h:48
+break example1.cu:65
+#break example1.cu:61
+#break example1.cu:69
 
+
+#break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/all_reduce.h:48
 #break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/all_reduce.h:56
 #break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/all_reduce.h:65
 #break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/all_reduce.h:73
