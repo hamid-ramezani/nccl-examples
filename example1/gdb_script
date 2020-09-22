@@ -5,7 +5,7 @@ set can-use-hw-watchpoints 0
 set pagination off
 
 #breakpoints
-break example1.cu:65
+break example1.cu:78
 #break example1.cu:61
 #break example1.cu:69
 

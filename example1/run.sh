@@ -18,7 +18,7 @@ nvcc -I/nfs/scistore08/alistgrp/hramezan/nccl/build/include -L/nfs/scistore08/al
 
 
 #gdb ./a.out --x gdb_script
-#cuda-gdb ./a.out --x gdb_script
+ cuda-gdb ./a.out --x gdb_script
 
 
 #./a.out
