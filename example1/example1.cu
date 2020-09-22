@@ -76,7 +76,7 @@ int main(int argc, char* argv[])
   NCCLCHECK(ncclGroupStart());
   for (int i = 0; i < nDev; ++i)
    // NCCLCHECK(ncclAllReduce((const void*)sendbuff[i], (void*)recvbuff[i], size, ncclFloat, ncclSum, comms[i], s[i]));
-    NCCLCHECK(ncclAllReduce((const void*)sendbuff[i], (void*)recvbuff[i], size, ncclInt, ncclSum, comms[i], s[i]));
+    NCCLCHECK(ncclAllReduce((const void*)sendbuff[i], (void*)recvbuff[i], size, ncclInt8, ncclSum, comms[i], s[i]));
   NCCLCHECK(ncclGroupEnd());
 
 
