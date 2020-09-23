@@ -38,50 +38,44 @@ int main(int argc, char* argv[])
 
 
   //allocating and initializing device buffers
-  int** sendbuff = (int**)malloc(nDev * sizeof(int*));
-  int** recvbuff = (int**)malloc(nDev * sizeof(int*));
+  int** sendbuff = (int**)malloc(nDev * sizeof(int8_t*));
+  int** recvbuff = (int**)malloc(nDev * sizeof(int8_t*));
   cudaStream_t* s = (cudaStream_t*)malloc(nDev * sizeof(cudaStream_t));
-  int* h_sendbuff = (int*)malloc(size * sizeof(int));
-  int* h_recvbuff = (int*)malloc(size * sizeof(int));
-
- // memset(h_sendbuff, 1, sizeof(int) * size);
- // printf("%i\n",h_sendbuff[0]);
- // printf(h_sendbuff[0]);
- // exit(0);
-
+  
+  int8_t* h_sendbuff = (int8_t*)malloc(size * sizeof(int8_t));
+  int8_t* h_recvbuff = (int8_t*)malloc(size * sizeof(int8_t));
   
   for (int i = 0; i < nDev; ++i) {
     CUDACHECK(cudaSetDevice(i));
-    CUDACHECK(cudaMalloc((void**)sendbuff + i, size * sizeof(int)));
-    CUDACHECK(cudaMalloc((void**)recvbuff + i, size * sizeof(int)));
-    CUDACHECK(cudaMemset(sendbuff[i], 1, size * sizeof(int)));
-    CUDACHECK(cudaMemset(recvbuff[i], 0, size * sizeof(int)));
+    CUDACHECK(cudaMalloc((void**)sendbuff + i, size * sizeof(int8_t)));
+    CUDACHECK(cudaMalloc((void**)recvbuff + i, size * sizeof(int8_t)));
+    CUDACHECK(cudaMemset(sendbuff[i], 13, size * sizeof(int8_t)));
+    CUDACHECK(cudaMemset(recvbuff[i], 0, size * sizeof(int8_t)));
     CUDACHECK(cudaStreamCreate(s+i));
     cudaDeviceSynchronize();
   }
 
-  //initializing NCCL
-
-
-   cudaMemcpy(h_sendbuff,sendbuff[0],size * sizeof(int),cudaMemcpyDeviceToHost);
+   cudaMemcpy(h_sendbuff,sendbuff[0],size * sizeof(int8_t),cudaMemcpyDeviceToHost);
    cudaDeviceSynchronize();
    printf("%i",h_sendbuff[0]);
    printf("\n");
 
 
-
-   //calling NCCL communication API. Group API is required when using
-   //multiple devices per thread
+  //initializing NCCL
+  //calling NCCL communication API. Group API is required when using
+  //multiple devices per thread
   NCCLCHECK(ncclCommInitAll(comms, nDev, devs));
   NCCLCHECK(ncclGroupStart());
-  for (int i = 0; i < nDev; ++i)
+  for (int i = 0; i < nDev; ++i){
    // NCCLCHECK(ncclAllReduce((const void*)sendbuff[i], (void*)recvbuff[i], size, ncclFloat, ncclSum, comms[i], s[i]));
     NCCLCHECK(ncclAllReduce((const void*)sendbuff[i], (void*)recvbuff[i], size, ncclInt8, ncclSum, comms[i], s[i]));
+  }
+
   NCCLCHECK(ncclGroupEnd());
 
 
 
-   cudaMemcpy(h_recvbuff,recvbuff[0],size * sizeof(int),cudaMemcpyDeviceToHost);
+   cudaMemcpy(h_recvbuff,recvbuff[0],size * sizeof(int8_t),cudaMemcpyDeviceToHost);
    cudaDeviceSynchronize();
    printf("%i",h_recvbuff[0]);
    printf("\n");
