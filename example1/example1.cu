@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
   int nDev = 4;
   //int size = 32*1024*1024;
  
-  int size = 1;
+  int size = 8;
   int devs[4] = { 0, 1, 2, 3 };
 
 
@@ -57,8 +57,12 @@ int main(int argc, char* argv[])
 
    cudaMemcpy(h_sendbuff,sendbuff[0],size * sizeof(int8_t),cudaMemcpyDeviceToHost);
    cudaDeviceSynchronize();
-   printf("%i",h_sendbuff[0]);
-   printf("\n");
+   
+   for (int i = 0; i< size; ++i) {
+     printf("%i\n",h_sendbuff[i]);
+   }
+   //printf("%i\n",h_sendbuff[0]);
+   //printf("\n");
 
 
   //initializing NCCL
@@ -74,11 +78,14 @@ int main(int argc, char* argv[])
   NCCLCHECK(ncclGroupEnd());
 
 
+  cudaMemcpy(h_recvbuff,recvbuff[0],size * sizeof(int8_t),cudaMemcpyDeviceToHost);
+  cudaDeviceSynchronize();
 
-   cudaMemcpy(h_recvbuff,recvbuff[0],size * sizeof(int8_t),cudaMemcpyDeviceToHost);
-   cudaDeviceSynchronize();
-   printf("%i",h_recvbuff[0]);
-   printf("\n");
+   for (int i = 0; i< size; ++i) {
+     printf("%i\n",h_recvbuff[i]);
+   }
+  //printf("%i\n",h_recvbuff[0]);
+  //printf("\n");
  
 
  //synchronizing on CUDA streams to wait for completion of NCCL operation
