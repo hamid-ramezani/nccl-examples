@@ -31,11 +31,14 @@ int main(int argc, char* argv[])
 
   //managing 4 devices
   int nDev = 4;
-  //int size = 32*1024*1024;
- 
+
+  int size = 32*1024*1024;
   //int size = 32*32*32;
-  int size = 8;
+  //int size = 8;
+
   int devs[4] = { 0, 1, 2, 3 };
+  //size_t  heapSize = 1024 * 1024 * 1024;
+  //cudaDeviceSetLimit(cudaLimitMallocHeapSize, heapSize);
 
 
   //allocating and initializing device buffers
@@ -69,20 +72,13 @@ int main(int argc, char* argv[])
   
   
     CUDACHECK(cudaStreamCreate(s+i));
-    cudaDeviceSynchronize();
+    CUDACHECK(cudaDeviceSynchronize());
   }
 
-   cudaMemcpy(h_sendbuff,sendbuff[0],size * sizeof(int8_t),cudaMemcpyDeviceToHost);
+   CUDACHECK(cudaMemcpy(h_sendbuff,sendbuff[0],size * sizeof(int8_t),cudaMemcpyDeviceToHost));
    //cudaMemcpy(h_sendbuff,sendbuff[0],size * sizeof(float),cudaMemcpyDeviceToHost);
-   cudaDeviceSynchronize();
+   CUDACHECK(cudaDeviceSynchronize());
    
-   for (int i = 0; i< size; ++i) {
-     printf("%i\n",h_sendbuff[i]);
-   }
-   
-   //for (int i = 0; i< size; ++i) {
-   //  printf("%f\n",h_sendbuff[i]);
-   //}
 
 
   //initializing NCCL
@@ -98,17 +94,28 @@ int main(int argc, char* argv[])
   NCCLCHECK(ncclGroupEnd());
 
 
-  cudaMemcpy(h_recvbuff,recvbuff[0],size * sizeof(int8_t),cudaMemcpyDeviceToHost);
+  CUDACHECK(cudaMemcpy(h_recvbuff,recvbuff[0],size * sizeof(int8_t),cudaMemcpyDeviceToHost));
   //cudaMemcpy(h_recvbuff,recvbuff[0],size * sizeof(float),cudaMemcpyDeviceToHost);
-  cudaDeviceSynchronize();
+  CUDACHECK(cudaDeviceSynchronize());
 
-   for (int i = 0; i< size; ++i) {
-     printf("%i\n",h_recvbuff[i]);
-   }
+   //for (int i = 0; i< size; ++i) {
+   //  printf("%i\n",h_sendbuff[i]);
+   //}
+   
+   //for (int i = 0; i< size; ++i) {
+   //  printf("%f\n",h_sendbuff[i]);
+   //}
+
+
+   //for (int i = 0; i< size; ++i) {
+   //  printf("%i\n",h_recvbuff[i]);
+   //}
  
    //for (int i = 0; i< size; ++i) {
    //  printf("%f\n",h_recvbuff[i]);
    //}
+
+
 
  //synchronizing on CUDA streams to wait for completion of NCCL operation
   for (int i = 0; i < nDev; ++i) {

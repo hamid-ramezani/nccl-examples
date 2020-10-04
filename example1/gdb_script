@@ -3,6 +3,8 @@ set trace-commands on
 set logging on
 set can-use-hw-watchpoints 0
 set pagination off
+set cuda memcheck on
+
 
 #breakpoints
 #break example1.cu:78
@@ -10,25 +12,35 @@ set pagination off
 #break example1.cu:69
 
 
-break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/all_reduce.h:51
-break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/all_reduce.h:73
-break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/all_reduce.h:97
-break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/all_reduce.h:105
+#break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/all_reduce.h:51
+#break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/all_reduce.h:73
+#break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/all_reduce.h:97
+#break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/all_reduce.h:105
 #break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/all_reduce.h:56
 #break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/all_reduce.h:65
 #break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/all_reduce.h:73
 #break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/all_reduce.h:82
 
+break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/all_reduce.h:76
+
+
+
+
 #break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/primitives.h:185
 
 
-#break /nfs/scistore08/alistgrp/hramezan/nccl/src/enqueue.cc:527
 #break /nfs/scistore08/alistgrp/hramezan/nccl/src/enqueue.cc:84
 #break /nfs/scistore08/alistgrp/hramezan/nccl/src/enqueue.cc:124
 #break /nfs/scistore08/alistgrp/hramezan/nccl/src/enqueue.cc:215
+
+
 #break /nfs/scistore08/alistgrp/hramezan/nccl/src/init.cc:892
 #break /nfs/scistore08/alistgrp/hramezan/nccl/src/group.cc:111
 
+
+break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/common_kernel.h:245
+#break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/common_kernel.h:253
+#break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/common_kernel.h:255
 
 
 
