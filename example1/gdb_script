@@ -1,7 +1,7 @@
 set breakpoint pending on
 set trace-commands on
 set logging on
-set can-use-hw-watchpoints 0
+#set can-use-hw-watchpoints 0
 set pagination off
 set cuda memcheck on
 
@@ -21,7 +21,7 @@ set cuda memcheck on
 #break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/all_reduce.h:73
 #break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/all_reduce.h:82
 
-break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/all_reduce.h:76
+#break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/all_reduce.h:76
 
 
 
@@ -38,7 +38,7 @@ break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/all_reduce.h
 #break /nfs/scistore08/alistgrp/hramezan/nccl/src/group.cc:111
 
 
-break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/common_kernel.h:245
+#break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/common_kernel.h:245
 #break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/common_kernel.h:253
 #break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/common_kernel.h:255
 
