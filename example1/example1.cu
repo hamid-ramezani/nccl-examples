@@ -82,8 +82,6 @@ int main(int argc, char* argv[])
    CUDACHECK(cudaMemcpy(h_sendbuff,sendbuff[0],size * sizeof(int8_t),cudaMemcpyDeviceToHost));
    //cudaMemcpy(h_sendbuff,sendbuff[0],size * sizeof(float),cudaMemcpyDeviceToHost);
    CUDACHECK(cudaDeviceSynchronize());
-   
-
 
   //initializing NCCL
   //calling NCCL communication API. Group API is required when using
@@ -98,10 +96,9 @@ int main(int argc, char* argv[])
 
   NCCLCHECK(ncclGroupEnd());
 
-
   //CUDACHECK(cudaMemcpy(h_recvbuff,recvbuff[0],size * sizeof(int8_t),cudaMemcpyDeviceToHost));
   //cudaMemcpy(h_recvbuff,recvbuff[0],size * sizeof(float),cudaMemcpyDeviceToHost);
-  CUDACHECK(cudaDeviceSynchronize());
+  //CUDACHECK(cudaDeviceSynchronize());
 
    //for (int i = 0; i< size; ++i) {
    //  printf("%i\n",h_sendbuff[i]);
@@ -120,14 +117,14 @@ int main(int argc, char* argv[])
    //}
 
    //printf("the first element of the array is: %d \n", h_recvbuff[0]);
-   //int count = 0;
-   //for(int i=0; i<size; ++i){
-   //  if(h_recvbuff[i] != 52){
-   //     count++; 
-   //     printf("h_recvbuff[%d] = %d \n", i, h_recvbuff[i]);
-   //  }
-   //}
-   //printf("count = %d \n", count);
+   int count = 0;
+   for(int i=0; i<size; ++i){
+     if(h_recvbuff[i] != 52){
+        count++; 
+        //printf("h_recvbuff[%d] = %d \n", i, h_recvbuff[i]);
+     }
+   }
+   printf("count = %d \n", count);
 
 
  //synchronizing on CUDA streams to wait for completion of NCCL operation
