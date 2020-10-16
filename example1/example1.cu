@@ -32,9 +32,9 @@ int main(int argc, char* argv[])
   //managing 4 devices
   int nDev = 4;
 
-  int size = 32*1024*1024;
+  //int size = 32*1024*1024;
   //int size = 32*32*32;
-  //int size = 8;
+  int size = 8;
 
   int devs[4] = { 0, 1, 2, 3 };
   //size_t  heapSize = 1024 * 1024 * 1024;
@@ -44,8 +44,8 @@ int main(int argc, char* argv[])
   //allocating and initializing device buffers
   int8_t** sendbuff = (int8_t**)malloc(nDev * sizeof(int8_t*));
   int8_t** recvbuff = (int8_t**)malloc(nDev * sizeof(int8_t*));
-  int8_t** tempbuff1 = (int8_t**)malloc(nDev * sizeof(int8_t*));
-  int8_t** tempbuff2 = (int8_t**)malloc(nDev * sizeof(int8_t*));
+  //int8_t** tempbuff1 = (int8_t**)malloc(nDev * sizeof(int8_t*));
+  //int8_t** tempbuff2 = (int8_t**)malloc(nDev * sizeof(int8_t*));
   
   //float** sendbuff = (float**)malloc(nDev * sizeof(float*));
   //float** recvbuff = (float**)malloc(nDev * sizeof(float*));
@@ -66,10 +66,10 @@ int main(int argc, char* argv[])
     CUDACHECK(cudaMemset(recvbuff[i], 0, size * sizeof(int8_t)));
 
 
-    CUDACHECK(cudaMalloc((void**)tempbuff1 + i, size * sizeof(int8_t)));
-    CUDACHECK(cudaMalloc((void**)tempbuff2 + i, size * sizeof(int8_t)));
-    CUDACHECK(cudaMemset(tempbuff1[i], 0, size * sizeof(int8_t)));
-    CUDACHECK(cudaMemset(tempbuff2[i], 0, size * sizeof(int8_t)));
+    //CUDACHECK(cudaMalloc((void**)tempbuff1 + i, size * sizeof(int8_t)));
+    //CUDACHECK(cudaMalloc((void**)tempbuff2 + i, size * sizeof(int8_t)));
+    //CUDACHECK(cudaMemset(tempbuff1[i], 0, size * sizeof(int8_t)));
+    //CUDACHECK(cudaMemset(tempbuff2[i], 0, size * sizeof(int8_t)));
   
   
     //CUDACHECK(cudaMalloc((void**)sendbuff + i, size * sizeof(float)));
@@ -93,41 +93,40 @@ int main(int argc, char* argv[])
   NCCLCHECK(ncclGroupStart());
   for (int i = 0; i < nDev; ++i){
     //NCCLCHECK(ncclAllReduce((const void*)sendbuff[i], (void*)recvbuff[i], size, ncclFloat, ncclSum, comms[i], s[i]));
-    //NCCLCHECK(ncclAllReduce((const void*)sendbuff[i], (void*)recvbuff[i], size, ncclInt8 , ncclSum, comms[i], s[i]));
-    NCCLCHECK(ncclAllReduce((const void*)sendbuff[i], (void*)recvbuff[i], (void*)tempbuff1[i], (void*)tempbuff2[i], size, ncclInt8 , ncclSum, comms[i], s[i]));
+    NCCLCHECK(ncclAllReduce((const void*)sendbuff[i], (void*)recvbuff[i], size, ncclInt8 , ncclSum, comms[i], s[i]));
+    //NCCLCHECK(ncclAllReduce((const void*)sendbuff[i], (void*)recvbuff[i], (void*)tempbuff1[i], (void*)tempbuff2[i], size, ncclInt8 , ncclSum, comms[i], s[i]));
   }
 
   NCCLCHECK(ncclGroupEnd());
-
   CUDACHECK(cudaMemcpy(h_recvbuff,recvbuff[0],size * sizeof(int8_t),cudaMemcpyDeviceToHost));
   //cudaMemcpy(h_recvbuff,recvbuff[0],size * sizeof(float),cudaMemcpyDeviceToHost);
   //CUDACHECK(cudaDeviceSynchronize());
 
-   //for (int i = 0; i< size; ++i) {
-   //  printf("%i\n",h_sendbuff[i]);
-   //}
+   for (int i = 0; i< size; ++i) {
+     printf("%i\n",h_sendbuff[i]);
+   }
    
    //for (int i = 0; i< size; ++i) {
    //  printf("%f\n",h_sendbuff[i]);
    //}
 
-   //for (int i = 0; i< size; ++i) {
-   //  printf("%i\n",h_recvbuff[i]);
-   //}
+   for (int i = 0; i< size; ++i) {
+     printf("%i\n",h_recvbuff[i]);
+   }
  
    //for (int i = 0; i< size; ++i) {
    //  printf("%f\n",h_recvbuff[i]);
    //}
 
    //printf("the first element of the array is: %d \n", h_recvbuff[0]);
-   int count = 0;
-   for(int i=0; i<size; ++i){
-     if(h_recvbuff[i] != 52){
-        count++; 
-        //printf("h_recvbuff[%d] = %d \n", i, h_recvbuff[i]);
-     }
-   }
-   printf("count = %d \n", count);
+   //int count = 0;
+   //for(int i=0; i<size; ++i){
+   //  if(h_recvbuff[i] == 0){
+   //     count++; 
+   //     //printf("h_recvbuff[%d] = %d \n", i, h_recvbuff[i]);
+   //  }
+   //}
+   //printf("count = %d \n", count);
 
 
  //synchronizing on CUDA streams to wait for completion of NCCL operation
@@ -143,7 +142,8 @@ int main(int argc, char* argv[])
     CUDACHECK(cudaSetDevice(i));
     CUDACHECK(cudaFree(sendbuff[i]));
     CUDACHECK(cudaFree(recvbuff[i]));
-    //CUDACHECK(cudaFree(tempbuff[i]));
+    //CUDACHECK(cudaFree(tempbuff1[i]));
+    //CUDACHECK(cudaFree(tempbuff2[i]));
   }
 
 
@@ -155,4 +155,3 @@ int main(int argc, char* argv[])
   printf("Success \n");
   return 0;
 }
-
