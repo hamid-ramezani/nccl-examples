@@ -32,9 +32,9 @@ int main(int argc, char* argv[])
   //managing 4 devices
   int nDev = 4;
 
-  //int size = 32*1024*1024;
+  int size = 32*1024*1024;
   //int size = 32*32*32;
-  int size = 8;
+  //int size = 8;
 
   int devs[4] = { 0, 1, 2, 3 };
   //size_t  heapSize = 1024 * 1024 * 1024;
@@ -105,31 +105,31 @@ int main(int argc, char* argv[])
 
 
 
-   for (int i = 0; i< size; ++i) {
-     printf("%i\n",h_sendbuff[i]);
-   }
+   //for (int i = 0; i< size; ++i) {
+   //  printf("%i\n",h_sendbuff[i]);
+   //}
    
    //for (int i = 0; i< size; ++i) {
    //  printf("%f\n",h_sendbuff[i]);
    //}
 
-   for (int i = 0; i< size; ++i) {
-     printf("%i\n",h_recvbuff[i]);
-   }
+   //for (int i = 0; i< size; ++i) {
+   //  printf("%i\n",h_recvbuff[i]);
+   //}
  
    //for (int i = 0; i< size; ++i) {
    //  printf("%f\n",h_recvbuff[i]);
    //}
 
    //printf("the first element of the array is: %d \n", h_recvbuff[0]);
-   int count = 0;
-   for(int i=0; i<size; ++i){
-     if(h_recvbuff[i] != 52){
-        count++; 
-        printf("h_recvbuff[%d] = %d \n", i, h_recvbuff[i]);
-     }
-   }
-   printf("count = %d \n", count);
+   //int count = 0;
+   //for(int i=0; i<size; ++i){
+   //  if(h_recvbuff[i] != 52){
+   //     count++; 
+   //     printf("h_recvbuff[%d] = %d \n", i, h_recvbuff[i]);
+   //  }
+   //}
+   //printf("count = %d \n", count);
 
  //synchronizing on CUDA streams to wait for completion of NCCL operation
   for (int i = 0; i < nDev; ++i) {
