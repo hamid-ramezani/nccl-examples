@@ -42,34 +42,34 @@ int main(int argc, char* argv[])
 
 
   //allocating and initializing device buffers
-  int8_t** sendbuff = (int8_t**)malloc(nDev * sizeof(int8_t*));
-  int8_t** recvbuff = (int8_t**)malloc(nDev * sizeof(int8_t*));
-  //int8_t** tempbuff1 = (int8_t**)malloc(nDev * sizeof(int8_t*));
-  //int8_t** tempbuff2 = (int8_t**)malloc(nDev * sizeof(int8_t*));
+  int** sendbuff = (int**)malloc(nDev * sizeof(int*));
+  int** recvbuff = (int**)malloc(nDev * sizeof(int*));
+  //int** tempbuff1 = (int**)malloc(nDev * sizeof(int*));
+  //int** tempbuff2 = (int**)malloc(nDev * sizeof(int*));
   
   //float** sendbuff = (float**)malloc(nDev * sizeof(float*));
   //float** recvbuff = (float**)malloc(nDev * sizeof(float*));
   
   cudaStream_t* s = (cudaStream_t*)malloc(nDev * sizeof(cudaStream_t));
   
-  int8_t* h_sendbuff = (int8_t*)malloc(size * sizeof(int8_t));
-  int8_t* h_recvbuff = (int8_t*)malloc(size * sizeof(int8_t));
+  int* h_sendbuff = (int*)malloc(size * sizeof(int));
+  int* h_recvbuff = (int*)malloc(size * sizeof(int));
   
   //float* h_sendbuff = (float*)malloc(size * sizeof(float));
   //float* h_recvbuff = (float*)malloc(size * sizeof(float));
   
   for (int i = 0; i < nDev; ++i) {
     CUDACHECK(cudaSetDevice(i));
-    CUDACHECK(cudaMalloc((void**)sendbuff + i, size * sizeof(int8_t)));
-    CUDACHECK(cudaMalloc((void**)recvbuff + i, size * sizeof(int8_t)));
-    CUDACHECK(cudaMemset(sendbuff[i], 13, size * sizeof(int8_t)));
-    CUDACHECK(cudaMemset(recvbuff[i], 0, size * sizeof(int8_t)));
+    CUDACHECK(cudaMalloc((void**)sendbuff + i, size * sizeof(int)));
+    CUDACHECK(cudaMalloc((void**)recvbuff + i, size * sizeof(int)));
+    CUDACHECK(cudaMemset(sendbuff[i], 13, size * sizeof(int)));
+    CUDACHECK(cudaMemset(recvbuff[i], 0, size * sizeof(int)));
 
 
-    //CUDACHECK(cudaMalloc((void**)tempbuff1 + i, size * sizeof(int8_t)));
-    //CUDACHECK(cudaMalloc((void**)tempbuff2 + i, size * sizeof(int8_t)));
-    //CUDACHECK(cudaMemset(tempbuff1[i], 0, size * sizeof(int8_t)));
-    //CUDACHECK(cudaMemset(tempbuff2[i], 0, size * sizeof(int8_t)));
+    //CUDACHECK(cudaMalloc((void**)tempbuff1 + i, size * sizeof(int)));
+    //CUDACHECK(cudaMalloc((void**)tempbuff2 + i, size * sizeof(int)));
+    //CUDACHECK(cudaMemset(tempbuff1[i], 0, size * sizeof(int)));
+    //CUDACHECK(cudaMemset(tempbuff2[i], 0, size * sizeof(int)));
     //printf("the size of tempbuff1 inside user code is: %d \n", sizeof(tempbuff1[i]));
      
   
@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
     CUDACHECK(cudaDeviceSynchronize());
   }
 
-   CUDACHECK(cudaMemcpy(h_sendbuff,sendbuff[0],size * sizeof(int8_t),cudaMemcpyDeviceToHost));
+   CUDACHECK(cudaMemcpy(h_sendbuff,sendbuff[0],size * sizeof(int),cudaMemcpyDeviceToHost));
    //cudaMemcpy(h_sendbuff,sendbuff[0],size * sizeof(float),cudaMemcpyDeviceToHost);
    CUDACHECK(cudaDeviceSynchronize());
 
@@ -95,12 +95,13 @@ int main(int argc, char* argv[])
   for (int i = 0; i < nDev; ++i){
     //CUDACHECK(cudaSetDevice(i));
     //NCCLCHECK(ncclAllReduce((const void*)sendbuff[i], (void*)recvbuff[i], size, ncclFloat, ncclSum, comms[i], s[i]));
-    NCCLCHECK(ncclAllReduce((const void*)sendbuff[i], (void*)recvbuff[i], size, ncclInt8 , ncclSum, comms[i], s[i]));
+    //NCCLCHECK(ncclAllReduce((const void*)sendbuff[i], (void*)recvbuff[i], size, ncclInt8 , ncclSum, comms[i], s[i]));
+    NCCLCHECK(ncclAllReduce((const void*)sendbuff[i], (void*)recvbuff[i], size, ncclInt32 , ncclSum, comms[i], s[i]));
     //NCCLCHECK(ncclAllReduce((const void*)sendbuff[i], (void*)recvbuff[i], (void*)tempbuff1[i], (void*)tempbuff2[i], size, ncclInt8 , ncclSum, comms[i], s[i]));
   }
 
   NCCLCHECK(ncclGroupEnd());
-  CUDACHECK(cudaMemcpy(h_recvbuff,recvbuff[0],size * sizeof(int8_t),cudaMemcpyDeviceToHost));
+  CUDACHECK(cudaMemcpy(h_recvbuff,recvbuff[0],size * sizeof(int),cudaMemcpyDeviceToHost));
   //cudaMemcpy(h_recvbuff,recvbuff[0],size * sizeof(float),cudaMemcpyDeviceToHost);
   //CUDACHECK(cudaDeviceSynchronize());
 
@@ -122,9 +123,8 @@ int main(int argc, char* argv[])
 
    int count = 0;
    for(int i=0; i<size; ++i){
-     if(h_recvbuff[i] != 52){
+     if(h_recvbuff[i] != 875836468){
         count++; 
-        //printf("h_recvbuff[%d] = %d \n", i, h_recvbuff[i]);
      }
    }
    printf("count = %d \n", count);
