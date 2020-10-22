@@ -28,15 +28,19 @@
 int main(int argc, char* argv[])
 {
   ncclComm_t comms[4];
+  //ncclComm_t comms[6];
 
   //managing 4 devices
+  //int nDev =6;
   int nDev = 4;
 
-  int size = 128*1024*1024;
+  int size = 32*1024*1024;
+  //int size = 256*1024*1024;
   //int size = 32*32*32;
   //int size = 8;
 
-  int devs[4] = { 0, 1, 2, 3 };
+  //int devs[6] = { 0, 1, 2, 3, 4, 5 };
+  int devs[4] = { 0, 1, 2, 3};
   //size_t  heapSize = 1024 * 1024 * 1024;
   //cudaDeviceSetLimit(cudaLimitMallocHeapSize, heapSize);
 
@@ -70,7 +74,6 @@ int main(int argc, char* argv[])
     //CUDACHECK(cudaMalloc((void**)tempbuff2 + i, size * sizeof(int)));
     //CUDACHECK(cudaMemset(tempbuff1[i], 0, size * sizeof(int)));
     //CUDACHECK(cudaMemset(tempbuff2[i], 0, size * sizeof(int)));
-    //printf("the size of tempbuff1 inside user code is: %d \n", sizeof(tempbuff1[i]));
      
   
     //CUDACHECK(cudaMalloc((void**)sendbuff + i, size * sizeof(float)));
@@ -83,9 +86,9 @@ int main(int argc, char* argv[])
     CUDACHECK(cudaDeviceSynchronize());
   }
 
-   CUDACHECK(cudaMemcpy(h_sendbuff,sendbuff[0],size * sizeof(int),cudaMemcpyDeviceToHost));
-   //cudaMemcpy(h_sendbuff,sendbuff[0],size * sizeof(float),cudaMemcpyDeviceToHost);
-   CUDACHECK(cudaDeviceSynchronize());
+  CUDACHECK(cudaMemcpy(h_sendbuff,sendbuff[0],size * sizeof(int),cudaMemcpyDeviceToHost));
+  //cudaMemcpy(h_sendbuff,sendbuff[0],size * sizeof(float),cudaMemcpyDeviceToHost);
+  CUDACHECK(cudaDeviceSynchronize());
 
   //initializing NCCL
   //calling NCCL communication API. Group API is required when using
@@ -124,6 +127,7 @@ int main(int argc, char* argv[])
    int count = 0;
    for(int i=0; i<size; ++i){
      if(h_recvbuff[i] != 875836468){
+     //if(h_recvbuff[i] != 1313754702){
         count++; 
      }
    }
@@ -134,8 +138,6 @@ int main(int argc, char* argv[])
     CUDACHECK(cudaSetDevice(i));
     CUDACHECK(cudaStreamSynchronize(s[i]));
   }
-
-
 
   //free device buffers
   for (int i = 0; i < nDev; ++i) {
