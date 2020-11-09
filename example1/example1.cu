@@ -4,6 +4,9 @@
 #include <stdlib.h>
 #include <cuda_runtime_api.h>
 #include <cuda.h>
+#include <thrust/device_ptr.h>
+#include <thrust/fill.h>
+
 
 #define CUDACHECK(cmd) do {                         \
   cudaError_t e = cmd;                              \
@@ -27,17 +30,18 @@
 
 int main(int argc, char* argv[])
 {
-  ncclComm_t comms[8];
+
+  ncclComm_t comms[4];
 
   //managing 4 devices
-  int nDev = 8;
+  int nDev = 4;
 
-  int size = 128*1024*1024;
+  //int size = 256*1024*1024;
   //int size = 32*32*32;
-  //int size = 8;
+  int size = 8;
 
-  //int devs[4] = { 0, 1, 2, 3 };
-  int devs[8] = { 0, 1, 2, 3, 4, 5, 6, 7 };
+  int devs[4] = { 0, 1, 2, 3 };
+  //int devs[8] = { 0, 1, 2, 3, 4, 5, 6, 7 };
   //size_t  heapSize = 1024 * 1024 * 1024;
   //cudaDeviceSetLimit(cudaLimitMallocHeapSize, heapSize);
 
@@ -49,7 +53,7 @@ int main(int argc, char* argv[])
   
   float** sendbuff = (float**)malloc(nDev * sizeof(float*));
   float** recvbuff = (float**)malloc(nDev * sizeof(float*));
-  float** tempbuff = (float**)malloc(nDev * sizeof(float*));
+  //float** tempbuff = (float**)malloc(nDev * sizeof(float*));
   
   cudaStream_t* s = (cudaStream_t*)malloc(nDev * sizeof(cudaStream_t));
   
@@ -72,13 +76,22 @@ int main(int argc, char* argv[])
   
     CUDACHECK(cudaMalloc((void**)sendbuff + i, size * sizeof(float)));
     CUDACHECK(cudaMalloc((void**)recvbuff + i, size * sizeof(float)));
-    CUDACHECK(cudaMemset(sendbuff[i], 13, size * sizeof(float)));
-    CUDACHECK(cudaMemset(recvbuff[i], 0, size * sizeof(float)));
 
-    CUDACHECK(cudaMalloc((void**)tempbuff + i, size * sizeof(float)));
-    CUDACHECK(cudaMemset(tempbuff[i], 0, size * sizeof(float)));
+    float fill_value1 = 2;
+    thrust::device_ptr<float> dev_ptr1(sendbuff[i]);
+    thrust::fill(dev_ptr1, dev_ptr1 + size, fill_value1);
 
-  
+    float fill_value2 = 0;
+    thrust::device_ptr<float> dev_ptr2(recvbuff[i]);
+    thrust::fill(dev_ptr2, dev_ptr2 + size, fill_value2);
+
+
+
+    //CUDACHECK(cudaMemset(sendbuff[i], 2., size * sizeof(float)));
+    //CUDACHECK(cudaMemset(recvbuff[i], 0., size * sizeof(float)));
+
+    //CUDACHECK(cudaMalloc((void**)tempbuff + i, size * sizeof(float)));
+    //CUDACHECK(cudaMemset(tempbuff[i], 0, size * sizeof(float)));
   
     CUDACHECK(cudaStreamCreate(s+i));
     CUDACHECK(cudaDeviceSynchronize());
@@ -97,9 +110,9 @@ int main(int argc, char* argv[])
   NCCLCHECK(ncclGroupStart());
   for (int i = 0; i < nDev; ++i){
     //NCCLCHECK(ncclAllReduce((const void*)sendbuff[i], (void*)recvbuff[i], size, ncclInt8 , ncclSum, comms[i], s[i]));
-    //NCCLCHECK(ncclAllReduce((const void*)sendbuff[i], (void*)recvbuff[i], size, ncclFloat, ncclSum, comms[i], s[i]));
+    NCCLCHECK(ncclAllReduce((const void*)sendbuff[i], (void*)recvbuff[i], size, ncclFloat, ncclSum, comms[i], s[i]));
     //NCCLCHECK(ncclAllReduce((const void*)sendbuff[i], (void*)recvbuff[i], (void*)tempbuff[i], size, ncclInt8 , ncclSum, comms[i], s[i]));
-    NCCLCHECK(ncclAllReduce((const void*)sendbuff[i], (void*)recvbuff[i], (void*)tempbuff[i], size, ncclFloat , ncclSum, comms[i], s[i]));
+    //NCCLCHECK(ncclAllReduce((const void*)sendbuff[i], (void*)recvbuff[i], (void*)tempbuff[i], size, ncclFloat , ncclSum, comms[i], s[i]));
   }
 
   NCCLCHECK(ncclGroupEnd());
@@ -113,17 +126,17 @@ int main(int argc, char* argv[])
    //  printf("%i\n",h_sendbuff[i]);
    //}
    
-   //for (int i = 0; i< size; ++i) {
-   //  printf("%f\n",h_sendbuff[i]);
-   //}
+   for (int i = 0; i< size; ++i) {
+     printf("%5.2f\n",h_sendbuff[i]);
+   }
 
    //for (int i = 0; i< size; ++i) {
    //  printf("%i\n",h_recvbuff[i]);
    //}
  
-   //for (int i = 0; i< size; ++i) {
-   //  printf("%f\n",h_recvbuff[i]);
-   //}
+   for (int i = 0; i< size; ++i) {
+     printf("%5.2f\n",h_recvbuff[i]);
+   }
 
    //printf("the first element of the array is: %d \n", h_recvbuff[0]);
    //int count = 0;
@@ -149,7 +162,7 @@ int main(int argc, char* argv[])
     CUDACHECK(cudaSetDevice(i));
     CUDACHECK(cudaFree(sendbuff[i]));
     CUDACHECK(cudaFree(recvbuff[i]));
-    CUDACHECK(cudaFree(tempbuff[i]));
+    //CUDACHECK(cudaFree(tempbuff[i]));
   }
 
 
@@ -161,4 +174,3 @@ int main(int argc, char* argv[])
   printf("Success \n");
   return 0;
 }
-
