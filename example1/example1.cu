@@ -77,7 +77,7 @@ int main(int argc, char* argv[])
     CUDACHECK(cudaMalloc((void**)sendbuff + i, size * sizeof(float)));
     CUDACHECK(cudaMalloc((void**)recvbuff + i, size * sizeof(float)));
 
-    float fill_value1 = 2;
+    float fill_value1 = 2.4;
     thrust::device_ptr<float> dev_ptr1(sendbuff[i]);
     thrust::fill(dev_ptr1, dev_ptr1 + size, fill_value1);
 
@@ -127,7 +127,7 @@ int main(int argc, char* argv[])
    //}
    
    for (int i = 0; i< size; ++i) {
-     printf("%5.2f\n",h_sendbuff[i]);
+     printf("%f\n",h_sendbuff[i]);
    }
 
    //for (int i = 0; i< size; ++i) {
@@ -135,7 +135,7 @@ int main(int argc, char* argv[])
    //}
  
    for (int i = 0; i< size; ++i) {
-     printf("%5.2f\n",h_recvbuff[i]);
+     printf("%f\n",h_recvbuff[i]);
    }
 
    //printf("the first element of the array is: %d \n", h_recvbuff[0]);
