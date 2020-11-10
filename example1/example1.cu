@@ -30,7 +30,6 @@
 
 int main(int argc, char* argv[])
 {
-
   ncclComm_t comms[4];
 
   //managing 4 devices
@@ -52,7 +51,7 @@ int main(int argc, char* argv[])
   //int8_t** tempbuff = (int8_t**)malloc(nDev * sizeof(int8_t*));
   
   float** sendbuff = (float**)malloc(nDev * sizeof(float*));
-  float** recvbuff = (float**)malloc(nDev * sizeof(float*));
+  int** recvbuff = (int**)malloc(nDev * sizeof(int*));
   //float** tempbuff = (float**)malloc(nDev * sizeof(float*));
   
   cudaStream_t* s = (cudaStream_t*)malloc(nDev * sizeof(cudaStream_t));
@@ -61,7 +60,7 @@ int main(int argc, char* argv[])
   //int8_t* h_recvbuff = (int8_t*)malloc(size * sizeof(int8_t));
   
   float* h_sendbuff = (float*)malloc(size * sizeof(float));
-  float* h_recvbuff = (float*)malloc(size * sizeof(float));
+  int* h_recvbuff = (int*)malloc(size * sizeof(int));
   
   for (int i = 0; i < nDev; ++i) {
     CUDACHECK(cudaSetDevice(i));
@@ -75,16 +74,16 @@ int main(int argc, char* argv[])
   
   
     CUDACHECK(cudaMalloc((void**)sendbuff + i, size * sizeof(float)));
-    CUDACHECK(cudaMalloc((void**)recvbuff + i, size * sizeof(float)));
+    CUDACHECK(cudaMalloc((void**)recvbuff + i, size * sizeof(int)));
 
     float fill_value1 = 2.4;
     thrust::device_ptr<float> dev_ptr1(sendbuff[i]);
     thrust::fill(dev_ptr1, dev_ptr1 + size, fill_value1);
 
-    float fill_value2 = 0;
-    thrust::device_ptr<float> dev_ptr2(recvbuff[i]);
-    thrust::fill(dev_ptr2, dev_ptr2 + size, fill_value2);
-
+    //float fill_value2 = 0;
+    //thrust::device_ptr<float> dev_ptr2(recvbuff[i]);
+    //thrust::fill(dev_ptr2, dev_ptr2 + size, fill_value2);
+    CUDACHECK(cudaMemset(recvbuff[i], 0, size * sizeof(int)));
 
 
     //CUDACHECK(cudaMemset(sendbuff[i], 2., size * sizeof(float)));
@@ -119,7 +118,7 @@ int main(int argc, char* argv[])
 
 
   //CUDACHECK(cudaMemcpy(h_recvbuff,recvbuff[0],size * sizeof(int8_t),cudaMemcpyDeviceToHost));
-  CUDACHECK(cudaMemcpy(h_recvbuff,recvbuff[0],size * sizeof(float),cudaMemcpyDeviceToHost));
+  CUDACHECK(cudaMemcpy(h_recvbuff,recvbuff[0],size * sizeof(int),cudaMemcpyDeviceToHost));
   CUDACHECK(cudaDeviceSynchronize());
 
    //for (int i = 0; i< size; ++i) {
@@ -135,7 +134,7 @@ int main(int argc, char* argv[])
    //}
  
    for (int i = 0; i< size; ++i) {
-     printf("%f\n",h_recvbuff[i]);
+     printf("%d\n",h_recvbuff[i]);
    }
 
    //printf("the first element of the array is: %d \n", h_recvbuff[0]);
