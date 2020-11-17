@@ -131,14 +131,14 @@ int main(int argc, char* argv[])
    //  printf("%d\n",h_recvbuff[i]);
    //}
 
-   int count = 0;
-   for(int i=0; i<size; ++i){
-     if(h_recvbuff[i] != 8){
-        count++; 
-        //printf("h_recvbuff[%d] = %d \n", i, h_recvbuff[i]);
-     }
-   }
-   printf("count = %d \n", count);
+   //int count = 0;
+   //for(int i=0; i<size; ++i){
+   //  if(h_recvbuff[i] != 8){
+   //     count++; 
+   //     //printf("h_recvbuff[%d] = %d \n", i, h_recvbuff[i]);
+   //  }
+   //}
+   //printf("count = %d \n", count);
 
 
  //synchronizing on CUDA streams to wait for completion of NCCL operation
