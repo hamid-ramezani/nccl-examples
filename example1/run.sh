@@ -21,6 +21,11 @@ nvcc -I/nfs/scistore08/alistgrp/hramezan/nccl/build/include -L/nfs/scistore08/al
 nvcc -I/nfs/scistore08/alistgrp/hramezan/private_nccl/build/include -L/nfs/scistore08/alistgrp/hramezan/private_nccl/build/lib -lnccl -lcuda -lcudart -g -G example1.cu
 
 
+
+
+#nvprof --profile-api-trace none --print-gpu-trace ./a.out
+#nvprof --profile-api-trace none --profile-from-start off ./a.out
+
 #clang++ -I/nfs/scistore08/alistgrp/hramezan/private_nccl/build/include -L/nfs/scistore08/alistgrp/hramezan/private_nccl/build/lib -lnccl -lcuda -lcudart -g -std=c++1z example1.cu 
 
 
