@@ -35,15 +35,14 @@ int main(int argc, char* argv[])
   //managing 4 devices
   int nDev = 4;
 
-  int size = 256*1024*1024;
+  //int size = 256*1024*1024;
   //int size = 32*32*32;
-  //int size = 8;
+  int size = 8;
 
   int devs[4] = { 0, 1, 2, 3 };
   //int devs[8] = { 0, 1, 2, 3, 4, 5, 6, 7 };
   //size_t  heapSize = 1024 * 1024 * 1024;
   //cudaDeviceSetLimit(cudaLimitMallocHeapSize, heapSize);
-
 
   //allocating and initializing device buffers
   //int8_t** sendbuff = (int8_t**)malloc(nDev * sizeof(int8_t*));
@@ -120,25 +119,25 @@ int main(int argc, char* argv[])
 
 
   //CUDACHECK(cudaMemcpy(h_recvbuff,recvbuff[0],size * sizeof(int8_t),cudaMemcpyDeviceToHost));
-  CUDACHECK(cudaMemcpy(h_recvbuff, recvbuff[0], size * sizeof(float),cudaMemcpyDeviceToHost));
+  //CUDACHECK(cudaMemcpy(h_recvbuff, recvbuff[0], size * sizeof(float),cudaMemcpyDeviceToHost));
   CUDACHECK(cudaDeviceSynchronize());
 
-   //for (int i = 0; i< size; ++i) {
-   //  printf("%f\n",h_sendbuff[i]);
-   //}
+  for (int i = 0; i< size; ++i) {
+    printf("%f\n",h_sendbuff[i]);
+  }
  
-   //for (int i = 0; i< size; ++i) {
-   //  printf("%f\n",h_recvbuff[i]);
-   //}
+  for (int i = 0; i< size; ++i) {
+    printf("%f\n",h_recvbuff[i]);
+  }
 
-   int count = 0;
-   for(int i=0; i<size; ++i){
-     if(h_recvbuff[i] != 8.0f){
-        count++; 
-        //printf("h_recvbuff[%d] = %d \n", i, h_recvbuff[i]);
-     }
-   }
-   printf("count = %d \n", count);
+  //int count = 0;
+  //for(int i=0; i<size; ++i){
+  //  if(h_recvbuff[i] != 8.0f){
+  //     count++; 
+  //     //printf("h_recvbuff[%d] = %f \n", i, h_recvbuff[i]);
+  //  }
+  //}
+  //printf("count = %d \n", count);
 
 
  //synchronizing on CUDA streams to wait for completion of NCCL operation
