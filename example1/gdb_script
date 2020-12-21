@@ -12,7 +12,9 @@ set cuda memcheck on
 #break example1.cu:69
 
 
-#break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/all_reduce.h:51
+break /nfs/scistore08/alistgrp/hramezan/private_nccl/src/collectives/device/all_reduce.h:51
+break /nfs/scistore08/alistgrp/hramezan/private_nccl/src/collectives/device/compress.h:340
+
 #break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/all_reduce.h:73
 #break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/all_reduce.h:97
 #break /nfs/scistore08/alistgrp/hramezan/nccl/src/collectives/device/all_reduce.h:105
