@@ -30,23 +30,23 @@
 
 int main(int argc, char* argv[])
 {
-  ncclComm_t comms[2];
-  //ncclComm_t comms[4];
+  //ncclComm_t comms[2];
+  ncclComm_t comms[4];
 
   //managing 4 devices
   //int nDev = 1;
-  int nDev = 2;
-  //int nDev = 4;
+  //int nDev = 2;
+  int nDev = 4;
 
   //int size = 32*1024*1024;
   //int size = 128*32*32;
-  int size = 8192;
-  //int size = 8;
+  //int size = 8192;
+  int size = 8;
 
 
   //int devs[1] = { 0 };
-  int devs[2] = { 0, 1 };
-  //int devs[4] = { 0, 1, 2, 3 };
+  //int devs[2] = { 0, 1 };
+  int devs[4] = { 0, 1, 2, 3 };
   //size_t  heapSize = 1024 * 1024 * 1024;
   //cudaDeviceSetLimit(cudaLimitMallocHeapSize, heapSize);
 
@@ -152,7 +152,7 @@ int main(int argc, char* argv[])
 
   int count = 0;
   for(int i=0; i<size; ++i) {
-    if(abs(h_recvbuff[i] - 4.8) > 0.0001f){
+    if(abs(h_recvbuff[i] - 9.6) > 0.0001f){
        count++;
        printf("h_recvbuff[%d] = %f \n", i, h_recvbuff[i]);
     }
