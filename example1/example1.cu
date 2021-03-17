@@ -11,7 +11,7 @@
 #define CUDACHECK(cmd) do {                         \
   cudaError_t e = cmd;                              \
   if( e != cudaSuccess ) {                          \
-    printf("Failed: Cuda error %s:%d '%s'\n",             \
+    printf("Failed: Cuda error %s:%d '%s'\n",       \
         __FILE__,__LINE__,cudaGetErrorString(e));   \
     exit(EXIT_FAILURE);                             \
   }                                                 \
@@ -21,7 +21,7 @@
 #define NCCLCHECK(cmd) do {                         \
   ncclResult_t r = cmd;                             \
   if (r!= ncclSuccess) {                            \
-    printf("Failed, NCCL error %s:%d '%s'\n",             \
+    printf("Failed, NCCL error %s:%d '%s'\n",       \
         __FILE__,__LINE__,ncclGetErrorString(r));   \
     exit(EXIT_FAILURE);                             \
   }                                                 \
@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
   //int nDev = 2;
   int nDev = 4;
 
-  //int size = 32*1024*1024;
+  //int size = 128*1024*1024;
   //int size = 128*32*32;
   //int size = 8192;
   int size = 8;
@@ -83,26 +83,26 @@ int main(int argc, char* argv[])
     CUDACHECK(cudaMalloc((void**)recvbuff + i, size * sizeof(float)));
     //CUDACHECK(cudaMalloc((void**)recvbuff + i, size * sizeof(int8_t)));
 
-    //float fill_value1 = 0.014;
-    //float fill_value2 = 0.011;
-    //float fill_value3 = 0.012;
-    //float fill_value4 = 0.013;
-    //float fill_value5 = 0.015;
-    //float fill_value6 = 0.016;
-    //float fill_value7 = 0.020;
-    //float fill_value8 = 0.017;
-    //thrust::device_ptr<float> dev_ptr1(sendbuff[i]);
-    //thrust::fill(dev_ptr1, dev_ptr1 + 1, fill_value1);
-    //thrust::fill(dev_ptr1 + 1, dev_ptr1 + 2, fill_value2);
-    //thrust::fill(dev_ptr1 + 2, dev_ptr1 + 3, fill_value3);
-    //thrust::fill(dev_ptr1 + 3, dev_ptr1 + 4, fill_value4);
-    //thrust::fill(dev_ptr1 + 4, dev_ptr1 + 5, fill_value5);
-    //thrust::fill(dev_ptr1 + 5, dev_ptr1 + 6, fill_value6);
-    //thrust::fill(dev_ptr1 + 6, dev_ptr1 + 7, fill_value7);
-    //thrust::fill(dev_ptr1 + 7, dev_ptr1 + 8, fill_value8);
-
+    float fill_value1 = 0.014;
+    float fill_value2 = 0.011;
+    float fill_value3 = 0.012;
+    float fill_value4 = 0.013;
+    float fill_value5 = 0.015;
+    float fill_value6 = 0.016;
+    float fill_value7 = 0.020;
+    float fill_value8 = 0.017;
     thrust::device_ptr<float> dev_ptr1(sendbuff[i]);
-    thrust::fill(dev_ptr1, dev_ptr1 + size, 2.4);
+    thrust::fill(dev_ptr1, dev_ptr1 + 1, fill_value1);
+    thrust::fill(dev_ptr1 + 1, dev_ptr1 + 2, fill_value2);
+    thrust::fill(dev_ptr1 + 2, dev_ptr1 + 3, fill_value3);
+    thrust::fill(dev_ptr1 + 3, dev_ptr1 + 4, fill_value4);
+    thrust::fill(dev_ptr1 + 4, dev_ptr1 + 5, fill_value5);
+    thrust::fill(dev_ptr1 + 5, dev_ptr1 + 6, fill_value6);
+    thrust::fill(dev_ptr1 + 6, dev_ptr1 + 7, fill_value7);
+    thrust::fill(dev_ptr1 + 7, dev_ptr1 + 8, fill_value8);
+
+    //thrust::device_ptr<float> dev_ptr1(sendbuff[i]);
+    //thrust::fill(dev_ptr1, dev_ptr1 + size, 2.4);
 
     thrust::device_ptr<float> dev_ptr2(recvbuff[i]);
     thrust::fill(dev_ptr2, dev_ptr2 + size, 0.0);
@@ -142,19 +142,19 @@ int main(int argc, char* argv[])
   CUDACHECK(cudaMemcpy(h_recvbuff, recvbuff[0], size * sizeof(float),cudaMemcpyDeviceToHost));
   CUDACHECK(cudaDeviceSynchronize());
 
-  //for (int i = 0; i< size; ++i) {
-  //  printf("%f\n",h_sendbuff[i]);
-  //}
+  for (int i = 0; i< size; ++i) {
+    printf("%f\n",h_sendbuff[i]);
+  }
  
-  //for (int i = 0; i< size; ++i) {
-  //  printf("%f\n",h_recvbuff[i]);
-  //}
+  for (int i = 0; i< size; ++i) {
+    printf("%f\n",h_recvbuff[i]);
+  }
 
   int count = 0;
   for(int i=0; i<size; ++i) {
     if(abs(h_recvbuff[i] - 9.6) > 0.0001f){
        count++;
-       printf("h_recvbuff[%d] = %f \n", i, h_recvbuff[i]);
+       //printf("h_recvbuff[%d] = %f \n", i, h_recvbuff[i]);
     }
   }
   printf("count = %d \n", count);
